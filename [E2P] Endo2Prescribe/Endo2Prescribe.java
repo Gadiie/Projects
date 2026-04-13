@@ -307,6 +307,20 @@ public class Endo2Prescribe implements ActionListener
 
             chunk = outputString.substring(i, lineEnd);
 
+            // Check if new line happened within this chunk
+
+            if(chunk.contains("\n"))
+            {
+                int newLineIndex = chunk.indexOf("\n");
+                chunk = outputString.substring(i, i + newLineIndex);
+                i = i + newLineIndex + 1;
+            } else
+            {
+                i = lineEnd + 1;
+            }
+
+            // Add chunk to the newly constructed string.
+
             if (firstTime)
             {
                 amendedString = "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
@@ -315,8 +329,6 @@ public class Endo2Prescribe implements ActionListener
             {
                 amendedString = amendedString + "\n" + "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
             }
-            // increment i to skip the space
-            i = lineEnd + 1;
         }
         return amendedString;
     }
