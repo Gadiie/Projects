@@ -248,7 +248,8 @@ public class Endo2Prescribe implements ActionListener
     {
         setVariables();
         amendedString = cutString();
-        boldString();
+        if(!wbList.getText().isEmpty())
+            boldString();
 
         textOutput.setText(amendedString);
     }
