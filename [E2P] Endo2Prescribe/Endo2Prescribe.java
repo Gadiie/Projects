@@ -250,7 +250,6 @@ public class Endo2Prescribe implements ActionListener
         amendedString = cutString();
         if(!wbList.getText().isEmpty())
             boldString();
-
         textOutput.setText(amendedString);
     }
 
@@ -264,6 +263,7 @@ public class Endo2Prescribe implements ActionListener
         paramUpper = paramType + " " + upperValue.getText();
         paramLower = paramType + " " + lowerValue.getText();
 
+        // Convert string values to integers, setting defaults if failing
         try
         {
             stringLength = Integer.parseInt(slValue.getText());
@@ -326,6 +326,8 @@ public class Endo2Prescribe implements ActionListener
         String wordList = wbList.getText();
         String[] toBold = wordList.split(",");
 
+        // Uses regex to find a word that isn't already inside of another word, replaces it.
+
         for(int i=0;i<toBold.length;i++)
         {
             String boldWord = toBold[i];
@@ -354,20 +356,14 @@ public class Endo2Prescribe implements ActionListener
             {
                 if(line.contains(word))
                 {
-                    str.append("SCP; ");
-                    str.append(line);
-                    str.append(" RPP;");
-                    str.append(System.lineSeparator());
+                    str.append("SCP; " + line + " RPP;\n");
                     break;
                 } else
                 {
-                    str.append(line);
-                    str.append(System.lineSeparator());
+                    str.append(line + "\n");
                 }
             }
         }
-
         amendedString = str.toString();
     }
-
 }
