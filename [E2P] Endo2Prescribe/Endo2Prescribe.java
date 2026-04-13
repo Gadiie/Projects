@@ -339,5 +339,35 @@ public class Endo2Prescribe implements ActionListener
         amendedString = amendedString.replaceAll("\",E; " + paramLower + "; TEXT\"\";", "\",E; " + paramLower);
 
         amendedString = amendedString.replaceAll("TEXT\"\",E; " + paramUpper + "; TEXT\"", paramUpper + "; TEXT\"");
+        addPointerCommands(toBold);
     }
+
+    public void addPointerCommands(String[] toBold)
+    {
+        String[] lines = amendedString.split("\\R");
+
+        StringBuilder str = new StringBuilder();
+
+        for (String line : lines)
+        {
+            for (String word : toBold)
+            {
+                if(line.contains(word))
+                {
+                    str.append("SCP; ");
+                    str.append(line);
+                    str.append(" RPP;");
+                    str.append(System.lineSeparator());
+                    break;
+                } else
+                {
+                    str.append(line);
+                    str.append(System.lineSeparator());
+                }
+            }
+        }
+
+        amendedString = str.toString();
+    }
+
 }
