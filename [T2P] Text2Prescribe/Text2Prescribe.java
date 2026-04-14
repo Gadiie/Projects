@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 
-public class Endo2Prescribe implements ActionListener
+public class Text2Prescribe implements ActionListener
 {
     private JPanel panel;
     
@@ -62,7 +62,6 @@ public class Endo2Prescribe implements ActionListener
     private double xChange = 0.00;
 
     // Creating String Variables
-    private String outputString;
     private String amendedString;
 
     private String paramType;
@@ -71,7 +70,7 @@ public class Endo2Prescribe implements ActionListener
 
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
-    public Endo2Prescribe()
+    public Text2Prescribe()
     {
         frame = new JFrame();
 
@@ -173,7 +172,6 @@ public class Endo2Prescribe implements ActionListener
         textOutputScroll = new JScrollPane(textOutput);
         textOutputScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        
         // Creating Window
 
         panel = new JPanel(new GridBagLayout());
@@ -241,15 +239,17 @@ public class Endo2Prescribe implements ActionListener
 
     public static void main(String[] args)
     {
-        new Endo2Prescribe();
+        new Text2Prescribe();
     }
 
     public void actionPerformed(ActionEvent e)
     {
         setVariables();
-        amendedString = cutString();
+        amendedString = cutString(textInput.getText());
+
         if(!wbList.getText().isEmpty())
             boldString();
+
         textOutput.setText(amendedString);
     }
 
@@ -281,22 +281,21 @@ public class Endo2Prescribe implements ActionListener
         }
     }
 
-    public String cutString()
+    public String cutString(String userText)
     {
         Boolean firstTime = true;
-        outputString = textInput.getText();
-        String amendedString = "";
+        String constructedString = "";
 
         int i = 0;
         String chunk;
-        while (i < outputString.length())
+        while (i < userText.length())
         {
-            int lineEnd = Math.min(i + stringLength, outputString.length());
+            int lineEnd = Math.min(i + stringLength, userText.length());
 
             // Checks for end of string or in the middle of a word
-            if (lineEnd < outputString.length() && outputString.charAt(lineEnd) != ' ')
+            if (lineEnd < userText.length() && userText.charAt(lineEnd) != ' ')
             {
-                int lastSpace = outputString.lastIndexOf(' ', lineEnd);
+                int lastSpace = userText.lastIndexOf(' ', lineEnd);
                 
                 // Only move back if there's a space after i
                 if (lastSpace > i)
@@ -305,14 +304,14 @@ public class Endo2Prescribe implements ActionListener
                 }
             }
 
-            chunk = outputString.substring(i, lineEnd);
+            chunk = userText.substring(i, lineEnd);
 
             // Check if new line happened within this chunk
 
             if(chunk.contains("\n"))
             {
                 int newLineIndex = chunk.indexOf("\n");
-                chunk = outputString.substring(i, i + newLineIndex);
+                chunk = userText.substring(i, i + newLineIndex);
                 i = i + newLineIndex + 1;
             } else
             {
@@ -323,14 +322,15 @@ public class Endo2Prescribe implements ActionListener
 
             if (firstTime)
             {
-                amendedString = "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
+                constructedString = "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
                 firstTime = false;
             } else
             {
-                amendedString = amendedString + "\n" + "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
+                constructedString = constructedString + "\n" + "TEXT\"" + chunk + "\"; MRP " + df.format(xChange) + ", "+ df.format(yChange) + ";";
             }
         }
-        return amendedString;
+
+        return constructedString;
     }
 
     public void boldString()
@@ -350,7 +350,7 @@ public class Endo2Prescribe implements ActionListener
 
         // Clean up output by removing starting and ending possibilities
 
-        amendedString = amendedString.replaceAll("\",E; " + paramLower + "; TEXT\"\";", "\",E; " + paramLower);
+        amendedString = amendedString.replaceAll("\",E; " + paramLower + "; TEXT\"\";", "\",E; " + paramLower + ";");
 
         amendedString = amendedString.replaceAll("TEXT\"\",E; " + paramUpper + "; TEXT\"", paramUpper + "; TEXT\"");
         addPointerCommands(toBold);
@@ -376,6 +376,7 @@ public class Endo2Prescribe implements ActionListener
                 }
             }
         }
+
         amendedString = str.toString();
     }
 }
