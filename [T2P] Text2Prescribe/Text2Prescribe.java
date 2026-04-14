@@ -151,7 +151,6 @@ public class Text2Prescribe implements ActionListener
         wbPanel = new JPanel();
         wbPanel.add(wbLabel);
         wbPanel.add(wbList);
-
         
         // PROGRAM OUTPUTS
 
@@ -232,7 +231,7 @@ public class Text2Prescribe implements ActionListener
 
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("Endo2Prescribe");
+        frame.setTitle("Text2Prescribe");
         frame.setSize(800, 500);
         frame.setVisible(true);
     }
@@ -245,7 +244,7 @@ public class Text2Prescribe implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         setVariables();
-        amendedString = cutString(textInput.getText());
+        amendedString = cutString(amendedString);
 
         if(!wbList.getText().isEmpty())
             boldString();
@@ -255,6 +254,9 @@ public class Text2Prescribe implements ActionListener
 
     public void setVariables()
     {
+        // Sets amended string to text box, removing duplicate line breaks.
+        amendedString = textInput.getText().replaceAll("(\\r?\\n)+", "\n");;
+
         if(rbFONT.isSelected())
             paramType = "FONT";
         else
