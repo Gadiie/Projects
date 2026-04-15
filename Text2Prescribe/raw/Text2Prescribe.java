@@ -375,6 +375,7 @@ public class Text2Prescribe implements ActionListener
                 } else
                 {
                     str.append(line + "\n");
+                    break;
                 }
             }
         }
